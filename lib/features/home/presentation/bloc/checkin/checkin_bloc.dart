@@ -1,7 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
+
+import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:loginpage/features/home/data/model/checkin_model.dart';
 import 'package:loginpage/features/home/domain/repository/checkin_rep.dart';
 
@@ -10,42 +13,24 @@ part 'checkin_event.dart';
 part 'checkin_state.dart';
 
 class CheckinBloc extends Bloc<CheckinEvent, CheckinState> {
-  final ImagePicker picker = ImagePicker();
   final CheckinRepository repository;
 
   CheckinBloc(this.repository) : super(const CheckinState()) {
-    on<_CaptureSelfie>(_captureSelfie);
-    on<_CaptureOdometer>(_captureOdometer);
+    on<_SelfieCaptured>(_onSelfieCaptured);
+    on<_OdometerCaptured>(_onOdometerCaptured);
     on<_Submit>(_onSubmit);
     on<_Reset>(_onReset);
   }
 
-  Future<void> _captureSelfie(
-    _CaptureSelfie event,
-    Emitter<CheckinState> emit,
-  ) async {
-    final image = await picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 80,
-    );
-
-    if (image != null) {
-      emit(state.copyWith(selfieImage: image));
-    }
+  void _onSelfieCaptured(_SelfieCaptured event, Emitter<CheckinState> emit) {
+    emit(state.copyWith(selfieImage: event.image));
   }
 
-  Future<void> _captureOdometer(
-    _CaptureOdometer event,
+  void _onOdometerCaptured(
+    _OdometerCaptured event,
     Emitter<CheckinState> emit,
-  ) async {
-    final image = await picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 80,
-    );
-
-    if (image != null) {
-      emit(state.copyWith(odometerImage: image));
-    }
+  ) {
+    emit(state.copyWith(odometerImage: event.image));
   }
 
   Future<void> _onSubmit(_Submit event, Emitter<CheckinState> emit) async {
@@ -63,6 +48,15 @@ class CheckinBloc extends Bloc<CheckinEvent, CheckinState> {
       }
 
       final location = await repository.getLocation();
+
+      log("========== BLOC ==========");
+      log("Log Type        : ${event.logType}");
+      log("Odometer Value  : ${event.odometerValue}");
+      log("Latitude        : ${location.latitude}");
+      log("Longitude       : ${location.longitude}");
+      log("Selfie Path     : ${state.selfieImage!.path}");
+      log("Odometer Path   : ${state.odometerImage!.path}");
+      log("===========================");
 
       final request = CheckinRequest(
         logType: event.logType,

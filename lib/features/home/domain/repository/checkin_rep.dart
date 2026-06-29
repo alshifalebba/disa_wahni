@@ -13,66 +13,75 @@ class CheckinRepository {
   Future<void> submit(CheckinRequest request) async {
     final token = await SecureStorageHelper.getToken();
 
-    final apiRequest = http.MultipartRequest("POST", Uri.parse(url));
+    if (token == null || token.isEmpty) {
+      throw Exception("Authentication token not found.");
+    }
 
-    //apiRequest.headers.addAll({"Authorization": "token $token"});
+    // Convert images to Base64
+    final selfieBytes = await request.selfieImage.readAsBytes();
+    final odometerBytes = await request.odometerImage.readAsBytes();
 
-    apiRequest.headers.addAll({"Authorization": "Basic $token"});
+    final selfieBase64 = base64Encode(selfieBytes);
+    final odometerBase64 = base64Encode(odometerBytes);
 
-    //log("Headers: ${apiRequest.headers}");
+    // Logs
+    // log("========== BASE64 LOG ==========");
+    // log("Selfie Base64 Length: ${selfieBase64.length}");
+    // log("Odometer Base64 Length: ${odometerBase64.length}");
 
-    apiRequest.fields["log_type"] = request.logType;
-    apiRequest.fields["odometer_value"] = request.odometerValue;
-    apiRequest.fields["latitude"] = request.latitude.toString();
-    apiRequest.fields["longitude"] = request.longitude.toString();
-    apiRequest.fields["time"] = DateTime.now().toIso8601String();
+    // // Print only the beginning of the string (don't print the entire Base64)
+    // log("Selfie Base64 : ${selfieBase64}");
+    // log("================================");
 
-    apiRequest.files.add(
-      await http.MultipartFile.fromPath("selfie", request.selfieImage.path),
+    // JSON Body
+    final body = {
+      "log_type": request.logType,
+      "image": selfieBase64,
+      "image_odo": odometerBase64,
+      "file_type": "jpg",
+      "odometer_value": request.odometerValue,
+      "latitude": request.latitude.toString(),
+      "longitude": request.longitude.toString(),
+      "time": DateTime.now().toIso8601String(),
+    };
+
+    log("========== REQUEST ==========");
+    log("URL              : $url");
+    log("Authorization    : Basic $token");
+    log("Log Type         : ${request.logType}");
+    log("Odometer Value   : ${request.odometerValue}");
+    log("Latitude         : ${request.latitude}");
+    log("Longitude        : ${request.longitude}");
+    log("Time             : ${DateTime.now().toIso8601String()}");
+    log("JSON Body:");
+    log(jsonEncode(body));
+    log("=============================");
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        "Authorization": "Basic $token",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: jsonEncode(body),
     );
 
-    apiRequest.files.add(
-      await http.MultipartFile.fromPath(
-        "odometer_image",
-        request.odometerImage.path,
-      ),
-    );
-
-    // log("========== CHECK-IN REQUEST ==========");
-    // log("API URL : $url");
-    // log("Token : $token");
-    // log("Log Type : ${request.logType}");
-    // log("Odometer Value : ${request.odometerValue}");
-    // log("Latitude : ${request.latitude}");
-    // log("Longitude : ${request.longitude}");
-    // log("Time : ${DateTime.now().toIso8601String()}");
-
-    // log("Selfie Image Path : ${request.selfieImage.path}");
-    // log("Selfie Image Name : ${request.selfieImage.uri.pathSegments.last}");
-
-    // log("Odometer Image Path : ${request.odometerImage.path}");
-    // log("Odometer Image Name : ${request.odometerImage.uri.pathSegments.last}");
-
-    // log("Request Fields : ${apiRequest.fields}");
-
-    // log("======================================");
-
-    final response = await apiRequest.send();
-    final responseBody = await response.stream.bytesToString();
-
-    log("========== CHECK-IN RESPONSE ==========");
+    log("========== RESPONSE ==========");
     log("Status Code : ${response.statusCode}");
-    log("Response Body : $responseBody");
-    log("=======================================");
+    log(response.body);
+    log("==============================");
 
     if (response.statusCode != 200) {
       throw Exception(
-        "Check-In Failed\nStatus: ${response.statusCode}\n$responseBody",
+        "Check-In Failed\nStatus: ${response.statusCode}\n${response.body}",
       );
     }
 
-    final data = jsonDecode(responseBody);
-    if (data["message"]["success"] == false) {
+    final data = jsonDecode(response.body);
+
+    // API success check
+    if (data["message"] != null && data["message"]["success"] == false) {
       throw Exception(data["message"]["message"]);
     }
   }
@@ -88,6 +97,10 @@ class CheckinRepository {
 
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.denied) {
+      throw Exception("Location Permission Denied");
     }
 
     if (permission == LocationPermission.deniedForever) {

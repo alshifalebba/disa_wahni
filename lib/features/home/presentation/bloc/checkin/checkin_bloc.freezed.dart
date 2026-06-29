@@ -55,12 +55,12 @@ extension CheckinEventPatterns on CheckinEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _CaptureSelfie value)?  captureSelfie,TResult Function( _CaptureOdometer value)?  captureOdometer,TResult Function( _Submit value)?  submit,TResult Function( _Reset value)?  reset,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _SelfieCaptured value)?  selfieCaptured,TResult Function( _OdometerCaptured value)?  odometerCaptured,TResult Function( _Submit value)?  submit,TResult Function( _Reset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _CaptureSelfie() when captureSelfie != null:
-return captureSelfie(_that);case _CaptureOdometer() when captureOdometer != null:
-return captureOdometer(_that);case _Submit() when submit != null:
+case _SelfieCaptured() when selfieCaptured != null:
+return selfieCaptured(_that);case _OdometerCaptured() when odometerCaptured != null:
+return odometerCaptured(_that);case _Submit() when submit != null:
 return submit(_that);case _Reset() when reset != null:
 return reset(_that);case _:
   return orElse();
@@ -80,12 +80,12 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _CaptureSelfie value)  captureSelfie,required TResult Function( _CaptureOdometer value)  captureOdometer,required TResult Function( _Submit value)  submit,required TResult Function( _Reset value)  reset,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _SelfieCaptured value)  selfieCaptured,required TResult Function( _OdometerCaptured value)  odometerCaptured,required TResult Function( _Submit value)  submit,required TResult Function( _Reset value)  reset,}){
 final _that = this;
 switch (_that) {
-case _CaptureSelfie():
-return captureSelfie(_that);case _CaptureOdometer():
-return captureOdometer(_that);case _Submit():
+case _SelfieCaptured():
+return selfieCaptured(_that);case _OdometerCaptured():
+return odometerCaptured(_that);case _Submit():
 return submit(_that);case _Reset():
 return reset(_that);case _:
   throw StateError('Unexpected subclass');
@@ -104,12 +104,12 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _CaptureSelfie value)?  captureSelfie,TResult? Function( _CaptureOdometer value)?  captureOdometer,TResult? Function( _Submit value)?  submit,TResult? Function( _Reset value)?  reset,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _SelfieCaptured value)?  selfieCaptured,TResult? Function( _OdometerCaptured value)?  odometerCaptured,TResult? Function( _Submit value)?  submit,TResult? Function( _Reset value)?  reset,}){
 final _that = this;
 switch (_that) {
-case _CaptureSelfie() when captureSelfie != null:
-return captureSelfie(_that);case _CaptureOdometer() when captureOdometer != null:
-return captureOdometer(_that);case _Submit() when submit != null:
+case _SelfieCaptured() when selfieCaptured != null:
+return selfieCaptured(_that);case _OdometerCaptured() when odometerCaptured != null:
+return odometerCaptured(_that);case _Submit() when submit != null:
 return submit(_that);case _Reset() when reset != null:
 return reset(_that);case _:
   return null;
@@ -128,11 +128,11 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  captureSelfie,TResult Function()?  captureOdometer,TResult Function( String logType,  String odometerValue)?  submit,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( XFile image)?  selfieCaptured,TResult Function( XFile image)?  odometerCaptured,TResult Function( String logType,  String odometerValue)?  submit,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _CaptureSelfie() when captureSelfie != null:
-return captureSelfie();case _CaptureOdometer() when captureOdometer != null:
-return captureOdometer();case _Submit() when submit != null:
+case _SelfieCaptured() when selfieCaptured != null:
+return selfieCaptured(_that.image);case _OdometerCaptured() when odometerCaptured != null:
+return odometerCaptured(_that.image);case _Submit() when submit != null:
 return submit(_that.logType,_that.odometerValue);case _Reset() when reset != null:
 return reset();case _:
   return orElse();
@@ -152,11 +152,11 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  captureSelfie,required TResult Function()  captureOdometer,required TResult Function( String logType,  String odometerValue)  submit,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( XFile image)  selfieCaptured,required TResult Function( XFile image)  odometerCaptured,required TResult Function( String logType,  String odometerValue)  submit,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
-case _CaptureSelfie():
-return captureSelfie();case _CaptureOdometer():
-return captureOdometer();case _Submit():
+case _SelfieCaptured():
+return selfieCaptured(_that.image);case _OdometerCaptured():
+return odometerCaptured(_that.image);case _Submit():
 return submit(_that.logType,_that.odometerValue);case _Reset():
 return reset();case _:
   throw StateError('Unexpected subclass');
@@ -175,11 +175,11 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  captureSelfie,TResult? Function()?  captureOdometer,TResult? Function( String logType,  String odometerValue)?  submit,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( XFile image)?  selfieCaptured,TResult? Function( XFile image)?  odometerCaptured,TResult? Function( String logType,  String odometerValue)?  submit,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
-case _CaptureSelfie() when captureSelfie != null:
-return captureSelfie();case _CaptureOdometer() when captureOdometer != null:
-return captureOdometer();case _Submit() when submit != null:
+case _SelfieCaptured() when selfieCaptured != null:
+return selfieCaptured(_that.image);case _OdometerCaptured() when odometerCaptured != null:
+return odometerCaptured(_that.image);case _Submit() when submit != null:
 return submit(_that.logType,_that.odometerValue);case _Reset() when reset != null:
 return reset();case _:
   return null;
@@ -192,66 +192,134 @@ return reset();case _:
 /// @nodoc
 
 
-class _CaptureSelfie implements CheckinEvent {
-  const _CaptureSelfie();
+class _SelfieCaptured implements CheckinEvent {
+  const _SelfieCaptured(this.image);
   
 
+ final  XFile image;
 
-
+/// Create a copy of CheckinEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SelfieCapturedCopyWith<_SelfieCaptured> get copyWith => __$SelfieCapturedCopyWithImpl<_SelfieCaptured>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CaptureSelfie);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SelfieCaptured&&(identical(other.image, image) || other.image == image));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,image);
 
 @override
 String toString() {
-  return 'CheckinEvent.captureSelfie()';
+  return 'CheckinEvent.selfieCaptured(image: $image)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$SelfieCapturedCopyWith<$Res> implements $CheckinEventCopyWith<$Res> {
+  factory _$SelfieCapturedCopyWith(_SelfieCaptured value, $Res Function(_SelfieCaptured) _then) = __$SelfieCapturedCopyWithImpl;
+@useResult
+$Res call({
+ XFile image
+});
 
 
+
+
+}
+/// @nodoc
+class __$SelfieCapturedCopyWithImpl<$Res>
+    implements _$SelfieCapturedCopyWith<$Res> {
+  __$SelfieCapturedCopyWithImpl(this._self, this._then);
+
+  final _SelfieCaptured _self;
+  final $Res Function(_SelfieCaptured) _then;
+
+/// Create a copy of CheckinEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? image = null,}) {
+  return _then(_SelfieCaptured(
+null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
+as XFile,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
 
-class _CaptureOdometer implements CheckinEvent {
-  const _CaptureOdometer();
+class _OdometerCaptured implements CheckinEvent {
+  const _OdometerCaptured(this.image);
   
 
+ final  XFile image;
 
-
+/// Create a copy of CheckinEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$OdometerCapturedCopyWith<_OdometerCaptured> get copyWith => __$OdometerCapturedCopyWithImpl<_OdometerCaptured>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CaptureOdometer);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OdometerCaptured&&(identical(other.image, image) || other.image == image));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,image);
 
 @override
 String toString() {
-  return 'CheckinEvent.captureOdometer()';
+  return 'CheckinEvent.odometerCaptured(image: $image)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$OdometerCapturedCopyWith<$Res> implements $CheckinEventCopyWith<$Res> {
+  factory _$OdometerCapturedCopyWith(_OdometerCaptured value, $Res Function(_OdometerCaptured) _then) = __$OdometerCapturedCopyWithImpl;
+@useResult
+$Res call({
+ XFile image
+});
 
 
+
+
+}
+/// @nodoc
+class __$OdometerCapturedCopyWithImpl<$Res>
+    implements _$OdometerCapturedCopyWith<$Res> {
+  __$OdometerCapturedCopyWithImpl(this._self, this._then);
+
+  final _OdometerCaptured _self;
+  final $Res Function(_OdometerCaptured) _then;
+
+/// Create a copy of CheckinEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? image = null,}) {
+  return _then(_OdometerCaptured(
+null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
+as XFile,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
