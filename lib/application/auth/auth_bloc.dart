@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:loginpage/core/secure_storage.dart';
-import 'package:loginpage/features/auth/repository/authservice.dart';
+import 'package:loginpage/infrastructure/database_functions/secure_storage.dart';
+import 'package:loginpage/infrastructure/api_services/authservice.dart';
 part 'auth_bloc.freezed.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';

@@ -1,11 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loginpage/features/home/presentation/bloc/checkin/checkin_bloc.dart';
-import 'package:loginpage/features/home/presentation/pages/camera_page.dart';
+import 'package:loginpage/application/checkin/checkin_bloc.dart';
+import 'package:loginpage/presentation/checkin/camera_page.dart';
 
 class CheckinPage extends StatefulWidget {
   const CheckinPage({super.key});
@@ -29,16 +28,13 @@ class _CheckinPageState extends State<CheckinPage> {
     final XFile? image = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const CameraPage(
-          lensDirection: CameraLensDirection.front,
-        ),
+        builder: (_) =>
+            const CameraPage(lensDirection: CameraLensDirection.front),
       ),
     );
 
     if (image != null && mounted) {
-      context.read<CheckinBloc>().add(
-        CheckinEvent.selfieCaptured(image),
-      );
+      context.read<CheckinBloc>().add(CheckinEvent.selfieCaptured(image));
     }
   }
 
@@ -46,16 +42,13 @@ class _CheckinPageState extends State<CheckinPage> {
     final XFile? image = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const CameraPage(
-          lensDirection: CameraLensDirection.back,
-        ),
+        builder: (_) =>
+            const CameraPage(lensDirection: CameraLensDirection.back),
       ),
     );
 
     if (image != null && mounted) {
-      context.read<CheckinBloc>().add(
-        CheckinEvent.odometerCaptured(image),
-      );
+      context.read<CheckinBloc>().add(CheckinEvent.odometerCaptured(image));
     }
   }
 
@@ -64,19 +57,15 @@ class _CheckinPageState extends State<CheckinPage> {
     return BlocConsumer<CheckinBloc, CheckinState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage!),
-            ),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
         }
 
         if (state.successMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.successMessage!),
-            ),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.successMessage!)));
 
           odoController.clear();
 
@@ -84,9 +73,7 @@ class _CheckinPageState extends State<CheckinPage> {
             loginType = "IN";
           });
 
-          context.read<CheckinBloc>().add(
-                const CheckinEvent.reset(),
-              );
+          context.read<CheckinBloc>().add(const CheckinEvent.reset());
 
           Navigator.pop(context);
         }
@@ -104,10 +91,7 @@ class _CheckinPageState extends State<CheckinPage> {
             flexibleSpace: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    Color(0xFFCC2605),
-                    Color(0xFF8B5CF6),
-                  ],
+                  colors: [Color(0xFFCC2605), Color(0xFF8B5CF6)],
                 ),
               ),
             ),
@@ -123,7 +107,6 @@ class _CheckinPageState extends State<CheckinPage> {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-
                     DropdownButtonFormField<String>(
                       initialValue: loginType,
                       decoration: const InputDecoration(
@@ -132,14 +115,8 @@ class _CheckinPageState extends State<CheckinPage> {
                         prefixIcon: Icon(Icons.login),
                       ),
                       items: const [
-                        DropdownMenuItem(
-                          value: "IN",
-                          child: Text("In"),
-                        ),
-                        DropdownMenuItem(
-                          value: "OUT",
-                          child: Text("Out"),
-                        ),
+                        DropdownMenuItem(value: "IN", child: Text("In")),
+                        DropdownMenuItem(value: "OUT", child: Text("Out")),
                       ],
                       onChanged: (value) {
                         setState(() {
@@ -173,20 +150,15 @@ class _CheckinPageState extends State<CheckinPage> {
                         ),
                         child: state.selfieImage == null
                             ? const Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                    Icons.camera_alt_outlined,
-                                    size: 50,
-                                  ),
+                                  Icon(Icons.camera_alt_outlined, size: 50),
                                   SizedBox(height: 10),
                                   Text("Capture Selfie"),
                                 ],
                               )
                             : ClipRRect(
-                                borderRadius:
-                                    BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(12),
                                 child: Image.file(
                                   File(state.selfieImage!.path),
                                   fit: BoxFit.cover,
@@ -208,21 +180,15 @@ class _CheckinPageState extends State<CheckinPage> {
                         ),
                         child: state.odometerImage == null
                             ? const Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                    Icons.photo_camera_outlined,
-                                    size: 50,
-                                  ),
+                                  Icon(Icons.photo_camera_outlined, size: 50),
                                   SizedBox(height: 10),
-                                  Text(
-                                      "Capture Odometer Image"),
+                                  Text("Capture Odometer Image"),
                                 ],
                               )
                             : ClipRRect(
-                                borderRadius:
-                                    BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(12),
                                 child: Image.file(
                                   File(state.odometerImage!.path),
                                   fit: BoxFit.cover,
@@ -241,36 +207,27 @@ class _CheckinPageState extends State<CheckinPage> {
                             ? null
                             : () {
                                 if (odoController.text.trim().isEmpty) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text(
-                                        "Enter odometer value",
-                                      ),
+                                      content: Text("Enter odometer value"),
                                     ),
                                   );
                                   return;
                                 }
 
                                 if (state.selfieImage == null) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text(
-                                        "Capture selfie",
-                                      ),
+                                      content: Text("Capture selfie"),
                                     ),
                                   );
                                   return;
                                 }
 
                                 if (state.odometerImage == null) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text(
-                                        "Capture odometer image",
-                                      ),
+                                      content: Text("Capture odometer image"),
                                     ),
                                   );
                                   return;
@@ -279,27 +236,23 @@ class _CheckinPageState extends State<CheckinPage> {
                                 log("UI Login Type: $loginType");
 
                                 context.read<CheckinBloc>().add(
-                                      CheckinEvent.submit(
-                                        logType: loginType,
-                                        odometerValue:
-                                            odoController.text,
-                                      ),
-                                    );
+                                  CheckinEvent.submit(
+                                    logType: loginType,
+                                    odometerValue: odoController.text,
+                                  ),
+                                );
                               },
                         icon: state.isLoading
                             ? const SizedBox(
                                 width: 20,
                                 height: 20,
-                                child:
-                                    CircularProgressIndicator(
+                                child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                 ),
                               )
                             : const Icon(Icons.check),
                         label: Text(
-                          state.isLoading
-                              ? "Submitting..."
-                              : "Submit",
+                          state.isLoading ? "Submitting..." : "Submit",
                         ),
                       ),
                     ),

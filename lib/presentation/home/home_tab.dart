@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loginpage/features/home/presentation/pages/checkin_page.dart';
+import 'package:loginpage/presentation/checkin/checkin_page.dart';
 
 class HomeTab extends StatelessWidget {
   const HomeTab({super.key});

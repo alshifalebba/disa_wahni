@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
-import 'package:loginpage/core/hive_helper.dart';
-import 'package:loginpage/core/secure_storage.dart';
-import 'package:loginpage/features/auth/data/model/loginmodel.dart';
-import 'package:loginpage/features/auth/data/model/user_model.dart';
+import 'package:loginpage/core/cloud/cloud.dart';
+import 'package:loginpage/infrastructure/database_functions/hive_helper.dart';
+import 'package:loginpage/infrastructure/database_functions/secure_storage.dart';
+import 'package:loginpage/domain/login/loginmodel.dart';
+import 'package:loginpage/domain/user_details/user_model.dart';
 
 class AuthRepository {
-  static const String baseUrl =
-      "https://disa-uat.m.frappe.cloud/api/method/disa_backend.api.v1.auth.authenticate";
+  static const String login_url = "$BASE_URL.auth.authenticate";
 
   Future<LoginResponse> login({
     required String username,
@@ -17,11 +17,11 @@ class AuthRepository {
   }) async {
     try {
       log("========== LOGIN REQUEST ==========");
-      log("URL : $baseUrl");
+      log("URL : $login_url");
       log("Username : $username");
 
       final response = await http.post(
-        Uri.parse(baseUrl),
+        Uri.parse(login_url),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"username": username, "password": password}),
       );

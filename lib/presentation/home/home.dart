@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:loginpage/features/auth/presentation/pages/user_details.dart';
-import 'package:loginpage/features/home/presentation/pages/home_tab.dart';
+import 'package:loginpage/presentation/user_details/user_details.dart';
+import 'package:loginpage/presentation/home/home_tab.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

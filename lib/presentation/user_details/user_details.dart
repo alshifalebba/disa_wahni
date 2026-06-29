@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loginpage/features/auth/data/model/user_detail_item.dart';
-import 'package:loginpage/features/auth/data/model/user_model.dart';
-import 'package:loginpage/features/auth/presentation/bloc/auth/auth_bloc.dart';
-import 'package:loginpage/features/auth/repository/authservice.dart';
+import 'package:loginpage/domain/user_details/user_detail_item.dart';
+import 'package:loginpage/domain/user_details/user_model.dart';
+import 'package:loginpage/application/auth/auth_bloc.dart';
+import 'package:loginpage/infrastructure/api_services/authservice.dart';
 
 class UserDetails extends StatefulWidget {
   const UserDetails({super.key});

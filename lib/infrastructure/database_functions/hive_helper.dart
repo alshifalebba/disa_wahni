@@ -1,5 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:loginpage/features/auth/data/model/user_model.dart';
+import 'package:loginpage/domain/user_details/user_model.dart';
 
 class HiveHelper {
   static const String boxName = 'userBox';

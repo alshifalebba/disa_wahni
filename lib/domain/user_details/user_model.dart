@@ -1,4 +1,4 @@
-import 'package:loginpage/features/auth/data/model/user_detail_item.dart';
+import 'package:loginpage/domain/user_details/user_detail_item.dart';
 
 class UserDataModel {
   final String fullName;

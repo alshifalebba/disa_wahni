@@ -1,14 +1,14 @@
 import 'dart:convert';
-import 'dart:developer';
+//import 'dart:developer';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:loginpage/core/secure_storage.dart';
-import 'package:loginpage/features/home/data/model/checkin_model.dart';
+import 'package:loginpage/core/cloud/cloud.dart';
+import 'package:loginpage/infrastructure/database_functions/secure_storage.dart';
+import 'package:loginpage/domain/checkin/checkin_model.dart';
 
 class CheckinRepository {
-  static const String url =
-      "https://disa-uat.m.frappe.cloud/api/method/disa_backend.api.v1.employee.employee_checkin";
+  static const String checkin_url = "$BASE_URL.employee.employee_checkin";
 
   Future<void> submit(CheckinRequest request) async {
     final token = await SecureStorageHelper.getToken();
@@ -28,8 +28,6 @@ class CheckinRepository {
     // log("========== BASE64 LOG ==========");
     // log("Selfie Base64 Length: ${selfieBase64.length}");
     // log("Odometer Base64 Length: ${odometerBase64.length}");
-
-    // // Print only the beginning of the string (don't print the entire Base64)
     // log("Selfie Base64 : ${selfieBase64}");
     // log("================================");
 
@@ -45,20 +43,20 @@ class CheckinRepository {
       "time": DateTime.now().toIso8601String(),
     };
 
-    log("========== REQUEST ==========");
-    log("URL              : $url");
-    log("Authorization    : Basic $token");
-    log("Log Type         : ${request.logType}");
-    log("Odometer Value   : ${request.odometerValue}");
-    log("Latitude         : ${request.latitude}");
-    log("Longitude        : ${request.longitude}");
-    log("Time             : ${DateTime.now().toIso8601String()}");
-    log("JSON Body:");
-    log(jsonEncode(body));
-    log("=============================");
+    // log("========== REQUEST ==========");
+    // log("URL              : $checkin_url");
+    // log("Authorization    : Basic $token");
+    // log("Log Type         : ${request.logType}");
+    // log("Odometer Value   : ${request.odometerValue}");
+    // log("Latitude         : ${request.latitude}");
+    // log("Longitude        : ${request.longitude}");
+    // log("Time             : ${DateTime.now().toIso8601String()}");
+    // log("JSON Body:");
+    // log(jsonEncode(body));
+    // log("=============================");
 
     final response = await http.post(
-      Uri.parse(url),
+      Uri.parse(checkin_url),
       headers: {
         "Authorization": "Basic $token",
         "Content-Type": "application/json",
@@ -67,10 +65,10 @@ class CheckinRepository {
       body: jsonEncode(body),
     );
 
-    log("========== RESPONSE ==========");
-    log("Status Code : ${response.statusCode}");
-    log(response.body);
-    log("==============================");
+    // log("========== RESPONSE ==========");
+    // log("Status Code : ${response.statusCode}");
+    // log(response.body);
+    // log("==============================");
 
     if (response.statusCode != 200) {
       throw Exception(

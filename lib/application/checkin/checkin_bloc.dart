@@ -5,8 +5,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'package:loginpage/features/home/data/model/checkin_model.dart';
-import 'package:loginpage/features/home/domain/repository/checkin_rep.dart';
+import 'package:loginpage/domain/checkin/checkin_model.dart';
+import 'package:loginpage/infrastructure/api_services/checkin_rep.dart';
 
 part 'checkin_bloc.freezed.dart';
 part 'checkin_event.dart';
