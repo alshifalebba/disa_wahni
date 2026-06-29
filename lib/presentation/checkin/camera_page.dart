@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 class CameraPage extends StatefulWidget {
   final CameraLensDirection lensDirection;
 
-  const CameraPage({
-    super.key,
-    required this.lensDirection,
-  });
+  const CameraPage({super.key, required this.lensDirection});
 
   @override
   State<CameraPage> createState() => _CameraPageState();
@@ -56,13 +53,10 @@ class _CameraPageState extends State<CameraPage> {
 
   Future<void> captureImage() async {
     if (controller == null) return;
-
     if (!controller!.value.isInitialized) return;
-
     if (isCapturing) return;
-
     isCapturing = true;
-
+    
     final image = await controller!.takePicture();
 
     if (!mounted) return;
@@ -73,20 +67,14 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     if (!isInitialized) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: CameraPreview(controller!),
-          ),
+          Positioned.fill(child: CameraPreview(controller!)),
           Positioned(
             bottom: 40,
             left: 0,
@@ -100,10 +88,7 @@ class _CameraPageState extends State<CameraPage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 5,
-                    ),
+                    border: Border.all(color: Colors.grey, width: 5),
                   ),
                 ),
               ),

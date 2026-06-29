@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loginpage/domain/user_details/user_detail_item.dart';
 import 'package:loginpage/domain/user_details/user_model.dart';
 import 'package:loginpage/application/auth/auth_bloc.dart';
-import 'package:loginpage/infrastructure/api_services/authservice.dart';
+import 'package:loginpage/infrastructure/api_services/api_services.dart';
+import 'package:loginpage/infrastructure/api_services/login_rep.dart';
+import 'package:loginpage/infrastructure/database_functions/hive_helper.dart';
 
 class UserDetails extends StatefulWidget {
   const UserDetails({super.key});
@@ -13,7 +15,7 @@ class UserDetails extends StatefulWidget {
 }
 
 class _UserDetailsState extends State<UserDetails> {
-  final AuthRepository repository = AuthRepository();
+  final AuthRepository repository = AuthRepository(ApiService());
 
   UserDataModel? user;
 
@@ -44,7 +46,7 @@ class _UserDetailsState extends State<UserDetails> {
   }
 
   Future<void> loadUserData() async {
-    final data = await repository.getUserDetails();
+    final data = await HiveHelper.getUserData();
 
     setState(() {
       user = data;
@@ -163,7 +165,7 @@ class _UserDetailsState extends State<UserDetails> {
                               item.value,
                               textAlign: TextAlign.end,
                               style: const TextStyle(
-                                 color: Color.fromARGB(255, 105, 111, 223),
+                                color: Color.fromARGB(255, 105, 111, 223),
                                 fontSize: 16,
                               ),
                             ),

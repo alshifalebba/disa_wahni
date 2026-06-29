@@ -66,18 +66,15 @@ class _CheckinPageState extends State<CheckinPage> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(state.successMessage!)));
-
           odoController.clear();
-
           setState(() {
             loginType = "IN";
           });
-
           context.read<CheckinBloc>().add(const CheckinEvent.reset());
-
           Navigator.pop(context);
         }
       },
+
       builder: (context, state) {
         return Scaffold(
           backgroundColor: const Color(0xfff5f6fb),
