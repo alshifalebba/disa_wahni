@@ -128,12 +128,12 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( XFile image)?  selfieCaptured,TResult Function( XFile image)?  odometerCaptured,TResult Function( String logType,  String odometerValue)?  submit,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( XFile image)?  selfieCaptured,TResult Function( XFile image)?  odometerCaptured,TResult Function( String logType,  String vehicleType,  String odometerValue)?  submit,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SelfieCaptured() when selfieCaptured != null:
 return selfieCaptured(_that.image);case _OdometerCaptured() when odometerCaptured != null:
 return odometerCaptured(_that.image);case _Submit() when submit != null:
-return submit(_that.logType,_that.odometerValue);case _Reset() when reset != null:
+return submit(_that.logType,_that.vehicleType,_that.odometerValue);case _Reset() when reset != null:
 return reset();case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( XFile image)  selfieCaptured,required TResult Function( XFile image)  odometerCaptured,required TResult Function( String logType,  String odometerValue)  submit,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( XFile image)  selfieCaptured,required TResult Function( XFile image)  odometerCaptured,required TResult Function( String logType,  String vehicleType,  String odometerValue)  submit,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case _SelfieCaptured():
 return selfieCaptured(_that.image);case _OdometerCaptured():
 return odometerCaptured(_that.image);case _Submit():
-return submit(_that.logType,_that.odometerValue);case _Reset():
+return submit(_that.logType,_that.vehicleType,_that.odometerValue);case _Reset():
 return reset();case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( XFile image)?  selfieCaptured,TResult? Function( XFile image)?  odometerCaptured,TResult? Function( String logType,  String odometerValue)?  submit,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( XFile image)?  selfieCaptured,TResult? Function( XFile image)?  odometerCaptured,TResult? Function( String logType,  String vehicleType,  String odometerValue)?  submit,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case _SelfieCaptured() when selfieCaptured != null:
 return selfieCaptured(_that.image);case _OdometerCaptured() when odometerCaptured != null:
 return odometerCaptured(_that.image);case _Submit() when submit != null:
-return submit(_that.logType,_that.odometerValue);case _Reset() when reset != null:
+return submit(_that.logType,_that.vehicleType,_that.odometerValue);case _Reset() when reset != null:
 return reset();case _:
   return null;
 
@@ -325,10 +325,11 @@ as XFile,
 
 
 class _Submit implements CheckinEvent {
-  const _Submit({required this.logType, required this.odometerValue});
+  const _Submit({required this.logType, required this.vehicleType, required this.odometerValue});
   
 
  final  String logType;
+ final  String vehicleType;
  final  String odometerValue;
 
 /// Create a copy of CheckinEvent
@@ -341,16 +342,16 @@ _$SubmitCopyWith<_Submit> get copyWith => __$SubmitCopyWithImpl<_Submit>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Submit&&(identical(other.logType, logType) || other.logType == logType)&&(identical(other.odometerValue, odometerValue) || other.odometerValue == odometerValue));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Submit&&(identical(other.logType, logType) || other.logType == logType)&&(identical(other.vehicleType, vehicleType) || other.vehicleType == vehicleType)&&(identical(other.odometerValue, odometerValue) || other.odometerValue == odometerValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,logType,odometerValue);
+int get hashCode => Object.hash(runtimeType,logType,vehicleType,odometerValue);
 
 @override
 String toString() {
-  return 'CheckinEvent.submit(logType: $logType, odometerValue: $odometerValue)';
+  return 'CheckinEvent.submit(logType: $logType, vehicleType: $vehicleType, odometerValue: $odometerValue)';
 }
 
 
@@ -361,7 +362,7 @@ abstract mixin class _$SubmitCopyWith<$Res> implements $CheckinEventCopyWith<$Re
   factory _$SubmitCopyWith(_Submit value, $Res Function(_Submit) _then) = __$SubmitCopyWithImpl;
 @useResult
 $Res call({
- String logType, String odometerValue
+ String logType, String vehicleType, String odometerValue
 });
 
 
@@ -378,9 +379,10 @@ class __$SubmitCopyWithImpl<$Res>
 
 /// Create a copy of CheckinEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? logType = null,Object? odometerValue = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? logType = null,Object? vehicleType = null,Object? odometerValue = null,}) {
   return _then(_Submit(
 logType: null == logType ? _self.logType : logType // ignore: cast_nullable_to_non_nullable
+as String,vehicleType: null == vehicleType ? _self.vehicleType : vehicleType // ignore: cast_nullable_to_non_nullable
 as String,odometerValue: null == odometerValue ? _self.odometerValue : odometerValue // ignore: cast_nullable_to_non_nullable
 as String,
   ));

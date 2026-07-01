@@ -40,8 +40,8 @@ class ApiService {
       log("Authorization : Basic $token");
     }
 
-    log("Request Body");
-    log(jsonEncode(body));
+    // log("Request Body");
+    // log(jsonEncode(body));
 
     final response = await http.post(
       Uri.parse(url),
@@ -53,10 +53,10 @@ class ApiService {
       body: jsonEncode(body),
     );
 
-    log("========== RESPONSE ==========");
-    log("Status : ${response.statusCode}");
-    log(response.body);
-    log("==============================");
+    // log("========== RESPONSE ==========");
+    // log("Status : ${response.statusCode}");
+    // log(response.body);
+    // log("==============================");
 
     return response;
   }

@@ -10,14 +10,16 @@ class CheckinRepository {
 
   CheckinRepository(this.api);
 
-  static const checkinUrl = "$BASE_URL.employee.employee_checkin";
+  static const checkinUrl = "$BASE_URL.v1.employee.employee_checkin";
 
   Future<void> submit(CheckinRequest request) async {
     final selfieBase64 = base64Encode(await request.selfieImage.readAsBytes());
 
-    final odometerBase64 = base64Encode(
-      await request.odometerImage.readAsBytes(),
-    );
+    String odometerBase64 = "";
+
+    if (request.odometerImage != null) {
+      odometerBase64 = base64Encode(await request.odometerImage!.readAsBytes());
+    }
 
     final body = {
       "log_type": request.logType,

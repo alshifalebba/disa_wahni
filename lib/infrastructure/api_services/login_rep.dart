@@ -11,7 +11,7 @@ class AuthRepository {
   final ApiService api;
 
   AuthRepository(this.api);
-  static const loginUrl = "$BASE_URL.auth.authenticate";
+  static const loginUrl = "$BASE_URL.v1.auth.authenticate";
 
   Future<LoginResponse> login({
     required String username,

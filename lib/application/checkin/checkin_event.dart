@@ -12,6 +12,7 @@ class CheckinEvent with _$CheckinEvent {
 
   const factory CheckinEvent.submit({
     required String logType,
+    required String vehicleType,
     required String odometerValue,
   }) = _Submit;
 

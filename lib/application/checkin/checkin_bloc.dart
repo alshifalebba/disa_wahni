@@ -43,7 +43,13 @@ class CheckinBloc extends Bloc<CheckinEvent, CheckinState> {
         throw Exception("Please capture selfie.");
       }
 
-      if (state.odometerImage == null) {
+      if ((event.vehicleType == "Bike" || event.vehicleType == "Car") &&
+          event.odometerValue.trim().isEmpty) {
+        throw Exception("Please enter odometer value.");
+      }
+
+      if ((event.vehicleType == "Bike" || event.vehicleType == "Car") &&
+          state.odometerImage == null) {
         throw Exception("Please capture odometer image.");
       }
 
@@ -64,7 +70,9 @@ class CheckinBloc extends Bloc<CheckinEvent, CheckinState> {
         latitude: location.latitude,
         longitude: location.longitude,
         selfieImage: File(state.selfieImage!.path),
-        odometerImage: File(state.odometerImage!.path),
+        odometerImage: state.odometerImage != null
+            ? File(state.odometerImage!.path)
+            : null,
       );
 
       await repository.submit(request);
