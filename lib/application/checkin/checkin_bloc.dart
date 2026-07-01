@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
 import 'package:loginpage/domain/checkin/checkin_model.dart';
 import 'package:loginpage/infrastructure/api_services/checkin_rep.dart';
+import 'package:loginpage/infrastructure/database_functions/checkin_hivehelper.dart';
 
 part 'checkin_bloc.freezed.dart';
 part 'checkin_event.dart';
@@ -39,15 +39,18 @@ class CheckinBloc extends Bloc<CheckinEvent, CheckinState> {
     );
 
     try {
+      /// Selfie is always required
       if (state.selfieImage == null) {
         throw Exception("Please capture selfie.");
       }
 
+      /// Bike & Car require odometer
       if ((event.vehicleType == "Bike" || event.vehicleType == "Car") &&
           event.odometerValue.trim().isEmpty) {
         throw Exception("Please enter odometer value.");
       }
 
+      /// Bike & Car require odometer image
       if ((event.vehicleType == "Bike" || event.vehicleType == "Car") &&
           state.odometerImage == null) {
         throw Exception("Please capture odometer image.");
@@ -55,14 +58,11 @@ class CheckinBloc extends Bloc<CheckinEvent, CheckinState> {
 
       final location = await repository.getLocation();
 
-      log("========== BLOC ==========");
-      log("Log Type        : ${event.logType}");
-      log("Odometer Value  : ${event.odometerValue}");
-      log("Latitude        : ${location.latitude}");
-      log("Longitude       : ${location.longitude}");
-      log("Selfie Path     : ${state.selfieImage!.path}");
-      log("Odometer Path   : ${state.odometerImage!.path}");
-      log("===========================");
+      log("========== CHECK IN ==========");
+      log("Log Type : ${event.logType}");
+      log("Vehicle  : ${event.vehicleType}");
+      log("Latitude : ${location.latitude}");
+      log("Longitude: ${location.longitude}");
 
       final request = CheckinRequest(
         logType: event.logType,
@@ -75,7 +75,19 @@ class CheckinBloc extends Bloc<CheckinEvent, CheckinState> {
             : null,
       );
 
+      /// API CALL
       await repository.submit(request);
+
+      /// SAVE TO HIVE
+      if (event.logType == "IN") {
+        await CheckinHiveHelper.saveCheckIn(
+          vehicleType: event.vehicleType,
+          odometerValue: event.odometerValue,
+          odometerImage: state.odometerImage?.path,
+        );
+      } else {
+        await CheckinHiveHelper.updateCheckOut();
+      }
 
       emit(
         state.copyWith(

@@ -3,14 +3,16 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loginpage/application/bloc/vehicle_bloc.dart';
 import 'package:loginpage/application/checkin/checkin_bloc.dart';
-import 'package:loginpage/application/vehicle/vehicle_bloc.dart';
 import 'package:loginpage/infrastructure/api_services/api_services.dart';
 import 'package:loginpage/infrastructure/api_services/get_vehicle_rep.dart';
 import 'package:loginpage/presentation/checkin/camera_page.dart';
 
 class CheckinPage extends StatefulWidget {
-  const CheckinPage({super.key});
+  final String logType;
+
+  const CheckinPage({super.key, required this.logType});
 
   @override
   State<CheckinPage> createState() => _CheckinPageState();
@@ -19,7 +21,6 @@ class CheckinPage extends StatefulWidget {
 class _CheckinPageState extends State<CheckinPage> {
   final TextEditingController odoController = TextEditingController();
 
-  String loginType = "IN";
   String? selectedVehicle;
 
   bool get showOdometer =>
@@ -83,7 +84,6 @@ class _CheckinPageState extends State<CheckinPage> {
                 odoController.clear();
 
                 setState(() {
-                  loginType = "IN";
                   selectedVehicle = null;
                 });
 
@@ -98,9 +98,11 @@ class _CheckinPageState extends State<CheckinPage> {
                 appBar: AppBar(
                   centerTitle: true,
                   foregroundColor: Colors.white,
-                  title: const Text(
-                    "Employee Check In",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  title: Text(
+                    widget.logType == "IN"
+                        ? "Employee Check In"
+                        : "Employee Check Out",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   flexibleSpace: Container(
                     decoration: const BoxDecoration(
@@ -121,63 +123,42 @@ class _CheckinPageState extends State<CheckinPage> {
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
-                          /// Login Type
-                          DropdownButtonFormField<String>(
-                            value: loginType,
-                            decoration: const InputDecoration(
-                              labelText: "Login Type",
-                              border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.login),
-                            ),
-                            items: const [
-                              DropdownMenuItem(value: "IN", child: Text("In")),
-                              DropdownMenuItem(
-                                value: "OUT",
-                                child: Text("Out"),
-                              ),
-                            ],
-                            onChanged: (value) {
-                              setState(() {
-                                loginType = value!;
-                              });
-                            },
-                          ),
-
-                          const SizedBox(height: 20),
-
                           /// Vehicle Type
-                          if (vehicleState.isLoading)
-                            const CircularProgressIndicator()
-                          else
-                            DropdownButtonFormField<String>(
-                              value: selectedVehicle,
-                              decoration: const InputDecoration(
-                                labelText: "Vehicle Type",
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.directions_car),
+                          if (widget.logType == "IN") ...[
+                            if (vehicleState.isLoading)
+                              const CircularProgressIndicator()
+                            else
+                              DropdownButtonFormField<String>(
+                                value: selectedVehicle,
+                                decoration: const InputDecoration(
+                                  labelText: "Vehicle Type",
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.directions_car),
+                                ),
+                                items: vehicleState.vehicles
+                                    .map(
+                                      (vehicle) => DropdownMenuItem(
+                                        value: vehicle,
+                                        child: Text(vehicle),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedVehicle = value;
+
+                                    if (!showOdometer) {
+                                      odoController.clear();
+                                    }
+                                  });
+                                },
                               ),
-                              items: vehicleState.vehicles
-                                  .map(
-                                    (vehicle) => DropdownMenuItem(
-                                      value: vehicle,
-                                      child: Text(vehicle),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedVehicle = value;
 
-                                  if (!showOdometer) {
-                                    odoController.clear();
-                                  }
-                                });
-                              },
-                            ),
-
+                            const SizedBox(height: 20),
+                          ],
                           const SizedBox(height: 20),
 
-                          if (showOdometer)
+                          if (widget.logType == "IN" && showOdometer)
                             TextField(
                               controller: odoController,
                               keyboardType: TextInputType.number,
@@ -268,7 +249,8 @@ class _CheckinPageState extends State<CheckinPage> {
                               onPressed: state.isLoading
                                   ? null
                                   : () {
-                                      if (selectedVehicle == null) {
+                                      if (widget.logType == "IN" &&
+                                          selectedVehicle == null) {
                                         ScaffoldMessenger.of(
                                           context,
                                         ).showSnackBar(
@@ -322,9 +304,11 @@ class _CheckinPageState extends State<CheckinPage> {
 
                                       context.read<CheckinBloc>().add(
                                         CheckinEvent.submit(
-                                          logType: loginType,
-                                          vehicleType: selectedVehicle!,
-                                          odometerValue: showOdometer
+                                          logType: widget.logType,
+                                          vehicleType: selectedVehicle ?? "",
+                                          odometerValue:
+                                              widget.logType == "IN" &&
+                                                  showOdometer
                                               ? odoController.text
                                               : "",
                                         ),
@@ -340,7 +324,11 @@ class _CheckinPageState extends State<CheckinPage> {
                                     )
                                   : const Icon(Icons.check),
                               label: Text(
-                                state.isLoading ? "Submitting..." : "Submit",
+                                state.isLoading
+                                    ? "Submitting..."
+                                    : widget.logType == "IN"
+                                    ? "Check In"
+                                    : "Check Out",
                               ),
                             ),
                           ),
