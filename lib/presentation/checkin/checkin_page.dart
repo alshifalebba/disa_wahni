@@ -1,9 +1,8 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loginpage/application/bloc/vehicle_bloc.dart';
+import 'package:loginpage/application/vehicle/vehicle_bloc.dart';
 import 'package:loginpage/application/checkin/checkin_bloc.dart';
 import 'package:loginpage/infrastructure/api_services/api_services.dart';
 import 'package:loginpage/infrastructure/api_services/get_vehicle_rep.dart';
@@ -123,13 +122,13 @@ class _CheckinPageState extends State<CheckinPage> {
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
-                          /// Vehicle Type
+                          // Vehicle Type
                           if (widget.logType == "IN") ...[
                             if (vehicleState.isLoading)
                               const CircularProgressIndicator()
                             else
                               DropdownButtonFormField<String>(
-                                value: selectedVehicle,
+                                //value: selectedVehicle,
                                 decoration: const InputDecoration(
                                   labelText: "Vehicle Type",
                                   border: OutlineInputBorder(),
@@ -171,7 +170,7 @@ class _CheckinPageState extends State<CheckinPage> {
 
                           if (showOdometer) const SizedBox(height: 20),
 
-                          /// Selfie
+                          // Selfie
                           GestureDetector(
                             onTap: captureSelfie,
                             child: Container(
@@ -206,7 +205,7 @@ class _CheckinPageState extends State<CheckinPage> {
 
                           const SizedBox(height: 20),
 
-                          /// Odometer Image
+                          // Odometer Image
                           if (showOdometer)
                             GestureDetector(
                               onTap: captureOdometer,
