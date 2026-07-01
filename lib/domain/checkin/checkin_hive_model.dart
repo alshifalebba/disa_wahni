@@ -56,4 +56,19 @@ class CheckinHiveModel {
       isCheckedIn: isCheckedIn ?? this.isCheckedIn,
     );
   }
+
+  bool get completedToday {
+    if (checkOutTime == null) return false;
+
+    final inDate = DateTime.parse(checkInTime);
+    final outDate = DateTime.parse(checkOutTime!);
+    final today = DateTime.now();
+
+    return inDate.year == today.year &&
+        inDate.month == today.month &&
+        inDate.day == today.day &&
+        outDate.year == today.year &&
+        outDate.month == today.month &&
+        outDate.day == today.day;
+  }
 }

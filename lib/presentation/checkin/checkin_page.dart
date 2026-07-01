@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loginpage/infrastructure/database_functions/checkin_hivehelper.dart';
 import 'package:loginpage/application/vehicle/vehicle_bloc.dart';
 import 'package:loginpage/application/checkin/checkin_bloc.dart';
 import 'package:loginpage/infrastructure/api_services/api_services.dart';
@@ -21,14 +22,44 @@ class _CheckinPageState extends State<CheckinPage> {
   final TextEditingController odoController = TextEditingController();
 
   String? selectedVehicle;
+  bool loadingVehicle = true;
 
-  bool get showOdometer =>
-      selectedVehicle == "Bike" || selectedVehicle == "Car";
+  bool get showOdometer {
+    return selectedVehicle == "Bike" || selectedVehicle == "Car";
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadVehicleFromHive();
+  }
 
   @override
   void dispose() {
     odoController.dispose();
     super.dispose();
+  }
+
+  Future<void> loadVehicleFromHive() async {
+    if (widget.logType == "OUT") {
+      final data = await CheckinHiveHelper.get();
+
+      if (data != null) {
+        setState(() {
+          selectedVehicle = data.vehicleType;
+
+          if (selectedVehicle == "Bike" || selectedVehicle == "Car") {
+            odoController.text = data.odometerValue;
+          }
+        });
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        loadingVehicle = false;
+      });
+    }
   }
 
   Future<void> captureSelfie() async {
@@ -92,6 +123,11 @@ class _CheckinPageState extends State<CheckinPage> {
               }
             },
             builder: (context, state) {
+              if (loadingVehicle) {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              }
               return Scaffold(
                 backgroundColor: const Color(0xfff5f6fb),
                 appBar: AppBar(
@@ -128,7 +164,7 @@ class _CheckinPageState extends State<CheckinPage> {
                               const CircularProgressIndicator()
                             else
                               DropdownButtonFormField<String>(
-                                //value: selectedVehicle,
+                                value: selectedVehicle,
                                 decoration: const InputDecoration(
                                   labelText: "Vehicle Type",
                                   border: OutlineInputBorder(),
@@ -154,17 +190,57 @@ class _CheckinPageState extends State<CheckinPage> {
                               ),
 
                             const SizedBox(height: 20),
+                          ] else ...[
+                            if (selectedVehicle == "Others")
+                              DropdownButtonFormField<String>(
+                                value: selectedVehicle,
+                                decoration: const InputDecoration(
+                                  labelText: "Vehicle Type",
+                                  border: OutlineInputBorder(),
+                                ),
+                                items: vehicleState.vehicles
+                                    .map(
+                                      (vehicle) => DropdownMenuItem(
+                                        value: vehicle,
+                                        child: Text(vehicle),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedVehicle = value;
+
+                                    if (!showOdometer) {
+                                      odoController.clear();
+                                    }
+                                  });
+                                },
+                              )
+                            else
+                              TextFormField(
+                                initialValue: selectedVehicle,
+                                readOnly: true,
+                                decoration: const InputDecoration(
+                                  labelText: "Vehicle",
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.directions_car),
+                                ),
+                              ),
+
+                            const SizedBox(height: 20),
                           ],
                           const SizedBox(height: 20),
 
-                          if (widget.logType == "IN" && showOdometer)
+                          if (showOdometer)
                             TextField(
                               controller: odoController,
                               keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
-                                labelText: "Odometer Value",
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.speed),
+                              decoration: InputDecoration(
+                                labelText: widget.logType == "IN"
+                                    ? "Start Odometer"
+                                    : "End Odometer",
+                                border: const OutlineInputBorder(),
+                                prefixIcon: const Icon(Icons.speed),
                               ),
                             ),
 
@@ -305,9 +381,7 @@ class _CheckinPageState extends State<CheckinPage> {
                                         CheckinEvent.submit(
                                           logType: widget.logType,
                                           vehicleType: selectedVehicle ?? "",
-                                          odometerValue:
-                                              widget.logType == "IN" &&
-                                                  showOdometer
+                                          odometerValue: showOdometer
                                               ? odoController.text
                                               : "",
                                         ),

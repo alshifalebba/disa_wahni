@@ -68,4 +68,14 @@ class CheckinHiveHelper {
     final box = await openBox();
     await box.put(key, updated.toJson());
   }
+
+  static Future<bool> isAttendanceCompletedToday() async {
+  final data = await get();
+
+  if (data == null) {
+    return false;
+  }
+
+  return data.completedToday;
+}
 }

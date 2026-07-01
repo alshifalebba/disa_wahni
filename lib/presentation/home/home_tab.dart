@@ -47,6 +47,12 @@ class _HomeTabState extends State<HomeTab> {
   Widget build(BuildContext context) {
     final checkedIn = checkinData?.isCheckedIn ?? false;
 
+    bool completedToday = false;
+
+    if (checkinData != null) {
+      completedToday = checkinData!.completedToday;
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xfff5f6fb),
 
@@ -126,36 +132,57 @@ class _HomeTabState extends State<HomeTab> {
 
                   const SizedBox(height: 40),
 
-                  SizedBox(
-                    height: 55,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: checkedIn ? Colors.red : Colors.green,
+                  if (completedToday)
+                    Container(
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade100,
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                      icon: Icon(
-                        checkedIn ? Icons.logout : Icons.login,
-                        color: Colors.white,
-                      ),
-                      label: Text(
-                        checkedIn ? "Check Out" : "Check In",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 17,
+                      child: const Center(
+                        child: Text(
+                          "✅ Attendance Completed",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
                         ),
                       ),
-                      onPressed: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                CheckinPage(logType: checkedIn ? "OUT" : "IN"),
+                    )
+                  else
+                    SizedBox(
+                      height: 55,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: checkedIn
+                              ? Colors.red
+                              : Colors.green,
+                        ),
+                        icon: Icon(
+                          checkedIn ? Icons.logout : Icons.login,
+                          color: Colors.white,
+                        ),
+                        label: Text(
+                          checkedIn ? "Check Out" : "Check In",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
                           ),
-                        );
-
-                        await loadData();
-                      },
+                        ),
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => CheckinPage(
+                                logType: checkedIn ? "OUT" : "IN",
+                              ),
+                            ),
+                          );
+                          await loadData();
+                        },
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
