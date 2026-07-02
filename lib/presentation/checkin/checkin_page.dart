@@ -11,7 +11,7 @@ import 'package:loginpage/presentation/checkin/camera_page.dart';
 
 class CheckinPage extends StatefulWidget {
   final String logType;
-
+  
   const CheckinPage({super.key, required this.logType});
 
   @override
